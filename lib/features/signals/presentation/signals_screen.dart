@@ -69,8 +69,6 @@ class _SignalsScreenState extends State<SignalsScreen> {
       isLoading = true;
     });
 
-    // TODO: Integrate GetAnalyticSignals API here.
-
     await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;

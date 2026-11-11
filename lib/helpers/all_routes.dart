@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:aitek_task/features/auth/presentation/login_screen.dart';
 import 'package:aitek_task/features/profile/presentation/profile_screen.dart';
+import 'package:aitek_task/features/promo/presentation/promo_screen.dart';
 import 'package:aitek_task/features/signals/presentation/signals_screen.dart';
+import 'package:aitek_task/loading_screen.dart';
 import 'package:aitek_task/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -16,6 +18,7 @@ final class Routes {
   static const String profileScreen = '/ProfileScreen';
   static const String navigationScreen = '/NavigationScreen';
   static const String signalsScreen = '/SignalsScreen';
+  static const String promoScreen = '/PromoScreen';
 }
 
 final class RouteGenerator {
@@ -25,10 +28,10 @@ final class RouteGenerator {
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // case Routes.loadingScreen:
-      //   return Platform.isAndroid
-      //       ? _FadedTransitionRoute(widget: const Loading(), settings: settings)
-      //       : CupertinoPageRoute(builder: (context) => const Loading());
+      case Routes.loadingScreen:
+        return Platform.isAndroid
+            ? _FadedTransitionRoute(widget: const Loading(), settings: settings)
+            : CupertinoPageRoute(builder: (context) => const Loading());
 
       case Routes.loginScreen:
         return Platform.isAndroid
@@ -64,15 +67,13 @@ final class RouteGenerator {
               )
             : CupertinoPageRoute(builder: (context) => const SignalsScreen());
 
-      // case Routes.onBoardingScreen:
-      //   return Platform.isAndroid
-      //       ? _FadedTransitionRoute(
-      //           widget: const OnBoardingScreen(),
-      //           settings: settings,
-      //         )
-      //       : CupertinoPageRoute(
-      //           builder: (context) => const OnBoardingScreen(),
-      //         );
+      case Routes.promoScreen:
+        return Platform.isAndroid
+            ? _FadedTransitionRoute(
+                widget: const PromoScreen(),
+                settings: settings,
+              )
+            : CupertinoPageRoute(builder: (context) => const PromoScreen());
 
       default:
         return null;

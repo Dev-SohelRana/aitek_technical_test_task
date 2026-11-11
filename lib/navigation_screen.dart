@@ -1,5 +1,6 @@
 import 'package:aitek_task/features/home/presentation/home_screen.dart';
 import 'package:aitek_task/features/profile/presentation/profile_screen.dart';
+import 'package:aitek_task/features/promo/presentation/promo_screen.dart';
 import 'package:aitek_task/features/signals/presentation/signals_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,7 +24,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const SignalsScreen(),
-    const ProfileScreen(),
+    const PromoScreen(),
     const ProfileScreen(),
   ];
 
