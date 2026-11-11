@@ -6,8 +6,10 @@ import 'package:aitek_task/features/auth/presentation/widgets/secuirity_info_wid
 import 'package:aitek_task/helpers/all_routes.dart';
 import 'package:aitek_task/helpers/navigation_service.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
+import 'package:aitek_task/networks/api_acess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:aitek_task/helpers/toast.dart';
 
 import '../../../assets_helper/app_colors.dart';
 import 'widgets/login_header_widget.dart';
@@ -39,17 +41,33 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!formKey.currentState!.validate()) return;
 
     FocusScope.of(context).unfocus();
+
     setState(() => _isLoading = true);
 
-    // TODO: Integrate Peanut & Partner authentication APIs.
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final isSuccess = await authenticationRXObj.authenticationRX(
+        login: loginController.text.trim(),
+        password: passwordController.text,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() => _isLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Login API integration is pending.')),
-    );
+      if (isSuccess) {
+        ToastUtil.showShortToast('Login successful');
+
+        NavigationService.navigateTo(Routes.navigationScreen);
+      } else {
+        ToastUtil.showShortToast('Authentication failed');
+      }
+    } catch (error) {
+      if (!mounted) return;
+
+      ToastUtil.showShortToast('Login failed. Please try again.');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -80,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: loginController,
                               hintText: 'Enter your login',
                               prefixIcon: Icon(Icons.person_outline_rounded),
-                              keyboardType: TextInputType.text,
+                              keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -132,12 +150,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             UIHelper.verticalSpace(28.h),
                             _isLoading
-                                ? SizedBox(
-                                    height: 22.r,
-                                    width: 22.r,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 2.5,
-                                      color: AppColors.cFFFFFF,
+                                ? Center(
+                                    child: SizedBox(
+                                      height: 22.r,
+                                      width: 22.r,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                        color: AppColors.primaryColor,
+                                      ),
                                     ),
                                   )
                                 : CustomButton(

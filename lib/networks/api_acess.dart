@@ -1,13 +1,8 @@
-// import 'package:rxdart/rxdart.dart';
-
+import 'package:aitek_task/features/auth/data/rx.dart';
+import 'package:aitek_task/features/auth/model/authentication_response_model.dart';
 import 'package:rxdart/rxdart.dart';
 
-// RegisterRx registerRxOBJ = RegisterRx(
-//   empty: {},
-//   dataFetcher: BehaviorSubject<Map>(),
-// );
-
-// SignupEmailVerifyOtpRx signupEmailVerifyOtpRxObj = SignupEmailVerifyOtpRx(
-//   empty: SignupVerifyResponseModel(),
-//   dataFetcher: BehaviorSubject<SignupVerifyResponseModel>(),
-// );
+AuthenticationRX authenticationRXObj = AuthenticationRX(
+  empty: AuthenticationResponseModel(),
+  dataFetcher: BehaviorSubject<AuthenticationResponseModel>(),
+);

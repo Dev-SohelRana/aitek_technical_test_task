@@ -1,62 +1,13 @@
 import 'package:aitek_task/features/auth/presentation/login_screen.dart';
+import 'package:aitek_task/helpers/helper_methods.dart';
+import 'package:aitek_task/navigation_screen.dart';
+import 'package:aitek_task/networks/api_acess.dart';
 import 'package:flutter/material.dart';
 
 import 'constants/app_constants.dart';
 import 'helpers/di.dart';
-import 'networks/dio/dio.dart';
 import 'welcome_screen.dart';
 
-// final class Loading extends StatefulWidget {
-//   const Loading({super.key});
-
-//   @override
-//   State<Loading> createState() => _LoadingState();
-// }
-
-// class _LoadingState extends State<Loading> {
-//   bool _isLoading = true;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     loadInitialData();
-//   }
-
-//   Future<void> loadInitialData() async {
-//     /// Update dio token if logged in
-//     if (appData.read(kKeyIsLoggedIn) == true) {
-//       String token = appData.read(kKeyAccessToken);
-//       DioSingleton.instance.update(token);
-//     }
-
-//     await setInitValue();
-
-//     setState(() {
-//       _isLoading = false;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (_isLoading) {
-//       return const WelcomeScreen();
-//     }
-
-//     /// ✅ FIRST TIME → OnBoarding (only once)
-//     if (appData.read(kKeyIsFirstTime) == true) {
-//       return const OnBoardingScreen();
-//     }
-
-//     /// ✅ AFTER ONBOARDING
-//     if (appData.read(kKeyIsLoggedIn) == true ||
-//         appData.read(kKeyIsExploring) == true) {
-//       return const NavigationScreen();
-//     }
-
-//     /// ✅ NOT LOGGED IN
-//     return const LoginScreen();
-//   }
-// }
 final class Loading extends StatefulWidget {
   const Loading({super.key});
 
@@ -64,29 +15,32 @@ final class Loading extends StatefulWidget {
   State<Loading> createState() => _LoadingState();
 }
 
-class _LoadingState extends State<Loading> {
+final class _LoadingState extends State<Loading> {
   bool _isLoading = true;
+  bool _isAuthenticated = false;
 
   @override
   void initState() {
-    loadInitialData();
     super.initState();
+    loadInitialData();
   }
 
   Future<void> loadInitialData() async {
-    if (appData.read(kKeyIsLoggedIn)) {
-      String token = appData.read(kKeyAccessToken);
-      DioSingleton.instance.update(token);
-      //await getProfileRXOBJ.getProfile();
-    }
-    // await getCurrencyRXOBJ.getCurrency();
-    // await initializeNotifications();
-    //  LocalNotificationService.initialize();
-    // LocalNotificationService.getToken();
-    // DateTime time = DateTime.now().add(const Duration(minutes: 2));
-    // await schedulePrayerNotifications(time);
+    try {
+      await setInitValue();
 
-    // await schedulePrayerNotifications();
+      final bool isLoggedIn = appData.read(kKeyIsLoggedIn) ?? false;
+
+      if (isLoggedIn) {
+        _isAuthenticated = await authenticationRXObj.restoreSessionRX();
+      }
+    } catch (error) {
+      debugPrint('Initial loading error: $error');
+      _isAuthenticated = false;
+    }
+
+    if (!mounted) return;
+
     setState(() {
       _isLoading = false;
     });
@@ -96,17 +50,19 @@ class _LoadingState extends State<Loading> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const WelcomeScreen();
-    } else {
-      return const LoginScreen();
-      // return appData.read(kKeyIsLoggedIn) || appData.read(kKeyIsExploring)
-      //     ? const NavigationScreen()
-      //     : const LoginScreen();
-
-      // return appData.read(kKeyIsFirstTime)
-      //     ? const OnBoardingScreen()
-      //     : appData.read(kKeyIsLoggedIn)
-      //     ? const NavigationScreen()
-      //     : const LoginScreen();
     }
+
+    // First-time user
+    // if (appData.read(kKeyIsFirstTime) == true) {
+    //   return const OnBoardingScreen();
+    // }
+
+    // Logged-in or exploring user
+    if (_isAuthenticated || appData.read(kKeyIsExploring) == true) {
+      return const NavigationScreen();
+    }
+
+    // Not logged in
+    return const LoginScreen();
   }
 }

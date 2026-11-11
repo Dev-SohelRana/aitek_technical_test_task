@@ -119,6 +119,9 @@ const String kKeyIsExploring = 'exploring';
 const String kKeyScheduledPrayers = 'scheduled_prayers';
 const String kKeyOtpVerifyToken = 'otp_verify_token';
 const String kKeyUserImage = 'user_image';
+//AiTek
+const String kKeyPeanutToken = 'peanut_token';
+const String kKeyPartnerToken = 'partner_token';
 
 //order statuses
 
