@@ -41,4 +41,5 @@ class AppColors {
   static const Color whiteOverlay15 = Color(0x26FFFFFF);
   static const Color whiteOverlay20 = Color(0x33FFFFFF);
   static const Color white70 = Color(0xB3FFFFFF);
+  static const Color logoutRedColor = Color(0xFFDC2626);
 }
