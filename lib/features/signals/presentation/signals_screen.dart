@@ -4,8 +4,10 @@ import 'package:aitek_task/features/signals/presentation/widgets/currency_pair_s
 import 'package:aitek_task/features/signals/presentation/widgets/signal_card_widget.dart';
 import 'package:aitek_task/features/signals/presentation/widgets/signals_date_filter_widget.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
+import 'package:aitek_task/networks/api_acess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class SignalsScreen extends StatefulWidget {
   const SignalsScreen({super.key});
@@ -15,14 +17,12 @@ class SignalsScreen extends StatefulWidget {
 }
 
 class _SignalsScreenState extends State<SignalsScreen> {
+  final List<String> _selectedPairs = ['EURUSD', 'GBPUSD'];
   DateTime fromDate = DateTime.now().subtract(const Duration(days: 7));
-
   DateTime toDate = DateTime.now();
 
-  bool isLoading = false;
-
   Future<void> selectDateRange() async {
-    final DateTimeRange? picked = await showDateRangePicker(
+    final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
@@ -49,14 +49,8 @@ class _SignalsScreenState extends State<SignalsScreen> {
     }
   }
 
-  String formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year}';
-  }
-
   Future<void> loadSignals() async {
-    if (selectedPairs.isEmpty) {
+    if (_selectedPairs.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select at least one currency pair.'),
@@ -65,17 +59,11 @@ class _SignalsScreenState extends State<SignalsScreen> {
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
-
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (!mounted) return;
-
-    setState(() {
-      isLoading = false;
-    });
+    await signalsRXObj.getSignals(
+      pairs: List<String>.from(_selectedPairs),
+      fromDate: fromDate,
+      toDate: toDate,
+    );
   }
 
   @override
@@ -84,75 +72,148 @@ class _SignalsScreenState extends State<SignalsScreen> {
       backgroundColor: const Color(0xFFF6F8FC),
       appBar: CustomAppBar(title: 'Signals Archive', showLeadingIcon: false),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text(
-                  'Explore historical trading signals',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: const Color(0xFF64748B),
-                  ),
+        child: Obx(() {
+          final isLoading = signalsRXObj.isLoading.value;
+          final errorMessage = signalsRXObj.errorMessage.value;
+          final signalList = signalsRXObj.signals.toList(growable: false);
+          final hasLoaded = signalsRXObj.hasLoaded.value;
+
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    Center(
+                      child: Text(
+                        'Explore historical trading signals',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: const Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                    UIHelper.verticalSpace(12.h),
+                    CurrencyPairSelector(
+                      currencyPairs: currencyPairs,
+                      selectedPairs: _selectedPairs,
+                      onSelectionChanged: (pairs) {
+                        setState(() {
+                          _selectedPairs
+                            ..clear()
+                            ..addAll(pairs);
+                        });
+                      },
+                    ),
+                    UIHelper.verticalSpace(22.h),
+                    SignalsDateFilterWidget(
+                      fromDate: fromDate,
+                      toDate: toDate,
+                      isLoading: isLoading,
+                      onSelectDateRange: selectDateRange,
+                      onLoadSignals: loadSignals,
+                    ),
+                    UIHelper.verticalSpace(26.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Historical Signals',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF0B1F45),
+                          ),
+                        ),
+                        Text(
+                          '${signalList.length} Results',
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                    UIHelper.verticalSpace(14.h),
+                  ]),
                 ),
               ),
-              UIHelper.verticalSpace(12.h),
-              // Currency Pair Selection
-
-              CurrencyPairSelector(
-                currencyPairs: currencyPairs,
-                selectedPairs: selectedPairs,
-                onSelectionChanged: (pairs) {
-                  setState(() {
-                    selectedPairs
-                      ..clear()
-                      ..addAll(pairs);
-                  });
-                },
-              ),
-              UIHelper.verticalSpace(22.h),
-
-              SignalsDateFilterWidget(
-                fromDate: fromDate,
-                toDate: toDate,
-                isLoading: isLoading,
-                onSelectDateRange: selectDateRange,
-                onLoadSignals: loadSignals,
-              ),
-
-              UIHelper.verticalSpace(26.h),
-              // Signals List Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Historical Signals',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0B1F45),
+              if (isLoading)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (errorMessage != null)
+                SliverToBoxAdapter(
+                  child: _SignalsMessage(
+                    icon: Icons.cloud_off_outlined,
+                    message: errorMessage,
+                    actionLabel: 'Retry',
+                    onAction: loadSignals,
+                  ),
+                )
+              else if (signalList.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _SignalsMessage(
+                    icon: Icons.query_stats_rounded,
+                    message: hasLoaded
+                        ? 'No signals found for the selected pairs and date range.'
+                        : 'Select currency pairs and a date range, then load signals.',
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) =>
+                          SignalCardWidget(signal: signalList[index]),
+                      childCount: signalList.length,
                     ),
                   ),
-                  Text(
-                    '${signals.length} Results',
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF64748B),
-                    ),
-                  ),
-                ],
-              ),
-              UIHelper.verticalSpace(14.h),
-
-              ...signals.map((signal) => SignalCardWidget(signal: signal)),
-
-              // SignalCardWidget(signal: apiSignal),
+                ),
             ],
-          ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _SignalsMessage extends StatelessWidget {
+  const _SignalsMessage({
+    required this.icon,
+    required this.message,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final IconData icon;
+  final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 24.h),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 36.r, color: const Color(0xFF64748B)),
+            UIHelper.verticalSpace(10.h),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13.sp, color: const Color(0xFF64748B)),
+            ),
+            if (actionLabel != null && onAction != null)
+              TextButton(onPressed: onAction, child: Text(actionLabel!)),
+          ],
         ),
       ),
     );

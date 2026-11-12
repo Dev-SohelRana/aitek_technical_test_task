@@ -33,4 +33,7 @@ final class ForexEndpoints {
 
   static String getLastFourNumbersPhone() =>
       "$peanutBaseUrl/api/ClientCabinetBasic/GetLastFourNumbersPhone";
+
+  static String getAnalyticSignals(String login) =>
+      "$partnerBaseUrl/clientmobile/GetAnalyticSignals/${Uri.encodeComponent(login)}";
 }

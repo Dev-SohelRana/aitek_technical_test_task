@@ -1,15 +1,16 @@
 import 'package:aitek_task/helpers/ui_helpers.dart';
+import 'package:aitek_task/features/signals/model/signal_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignalCardWidget extends StatelessWidget {
-  final Map<String, dynamic> signal;
+  final SignalModel signal;
 
   const SignalCardWidget({super.key, required this.signal});
 
   @override
   Widget build(BuildContext context) {
-    final isBuy = signal['type'] == 'BUY';
+    final isBuy = signal.type == 'BUY';
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -30,7 +31,7 @@ class SignalCardWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
-                  signal['pair'] ?? '',
+                  signal.pair,
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w800,
@@ -50,7 +51,7 @@ class SignalCardWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(7.r),
                 ),
                 child: Text(
-                  signal['type'] ?? '',
+                  signal.type,
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w800,
@@ -63,14 +64,15 @@ class SignalCardWidget extends StatelessWidget {
 
               const Spacer(),
 
-              Text(
-                signal['status'] ?? '',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF64748B),
+              if (signal.status.isNotEmpty)
+                Text(
+                  signal.status,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF64748B),
+                  ),
                 ),
-              ),
             ],
           ),
 
@@ -82,17 +84,11 @@ class SignalCardWidget extends StatelessWidget {
 
           Row(
             children: [
-              SignalValueRowWidget(
-                title: 'Entry Price',
-                value: signal['entry'] ?? '',
-              ),
-              SignalValueRowWidget(
-                title: 'Stop Loss',
-                value: signal['stopLoss'] ?? '',
-              ),
+              SignalValueRowWidget(title: 'Entry Price', value: signal.entry),
+              SignalValueRowWidget(title: 'Stop Loss', value: signal.stopLoss),
               SignalValueRowWidget(
                 title: 'Take Profit',
-                value: signal['takeProfit'] ?? '',
+                value: signal.takeProfit,
               ),
             ],
           ),
@@ -110,7 +106,7 @@ class SignalCardWidget extends StatelessWidget {
               UIHelper.horizontalSpace(5.w),
 
               Text(
-                '${signal['date'] ?? ''}  •  ${signal['time'] ?? ''}',
+                '${signal.date}  •  ${signal.time}',
                 style: TextStyle(
                   fontSize: 10.sp,
                   color: const Color(0xFF64748B),
