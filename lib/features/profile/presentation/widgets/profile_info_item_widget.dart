@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -39,21 +40,13 @@ class ProfileInfoItemWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: const Color(0xFF64748B),
-                  ),
-                ),
+                Text(title, style: TextFontStyle.headlineRoboto40012Secondary),
 
                 SizedBox(height: 5.h),
 
                 Text(
                   value,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
+                  style: TextFontStyle.headlineRoboto60014Dark.copyWith(
                     color: valueColor ?? AppColors.darkTextColor,
                   ),
                 ),

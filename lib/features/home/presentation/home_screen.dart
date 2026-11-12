@@ -1,5 +1,6 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
 import 'package:aitek_task/constants/app_constants.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/features/home/presentation/widgets/account_top_card_widget.dart';
 import 'package:aitek_task/features/home/presentation/widgets/home_header_widget.dart';
 import 'package:aitek_task/features/home/presentation/widgets/supported_currency_pairs_widget.dart';
@@ -67,11 +68,7 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Access historical trading signals by selecting currency pairs and a date range.',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          height: 1.5,
-                          color: AppColors.darkTextColor,
-                        ),
+                        style: TextFontStyle.headlineRoboto40011DarkHeight15,
                       ),
                     ),
                   ],

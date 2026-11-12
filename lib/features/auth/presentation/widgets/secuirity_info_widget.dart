@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +26,7 @@ class SecurityInfoWidget extends StatelessWidget {
                   UIHelper.horizontalSpace(6.w),
                   Text(
                     'Secure & Encrypted',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.secondaryTextColor,
-                    ),
+                    style: TextFontStyle.headlineRoboto40012Secondary,
                   ),
                 ],
               ),
@@ -67,19 +65,12 @@ class SecurityInfoWidget extends StatelessWidget {
                   children: [
                     Text(
                       'Your Security Matters',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.darkTextColor,
-                      ),
+                      style: TextFontStyle.headlineRoboto70013Dark,
                     ),
                     UIHelper.verticalSpace(4.h),
                     Text(
                       'Your account information is protected.',
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: AppColors.secondaryTextColor,
-                      ),
+                      style: TextFontStyle.headlineRoboto40011Secondary,
                     ),
                   ],
                 ),

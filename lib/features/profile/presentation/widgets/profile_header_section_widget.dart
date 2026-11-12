@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,14 +19,7 @@ class ProfileHeaderSectionWidget extends StatelessWidget {
       children: [
         Icon(icon, size: 21.r, color: AppColors.primaryColor),
         SizedBox(width: 10.w),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.darkTextColor,
-          ),
-        ),
+        Text(title, style: TextFontStyle.headlineRoboto70016Dark),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,19 +24,11 @@ class CurrencyPairSelector extends StatelessWidget {
           children: [
             Text(
               'Currency Pairs',
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF0B1F45),
-              ),
+              style: TextFontStyle.headlineRoboto80015Dark,
             ),
             Text(
               '${selectedPairs.length} Selected',
-              style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF2563EB),
-              ),
+              style: TextFontStyle.headlineRoboto60011Primary,
             ),
           ],
         ),
@@ -96,9 +89,7 @@ class CurrencyPairSelector extends StatelessWidget {
                       ],
                       Text(
                         pair,
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w700,
+                        style: TextFontStyle.headlineRoboto70011Pair.copyWith(
                           color: isSelected
                               ? const Color(0xFF2563EB)
                               : const Color(0xFF475569),

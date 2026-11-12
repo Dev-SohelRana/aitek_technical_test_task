@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,7 +38,7 @@ class RememberMeRowWidget extends StatelessWidget {
             onTap: () => onChanged(!value),
             child: Text(
               'Remember me',
-              style: TextStyle(fontSize: 13.sp, color: AppColors.darkTextColor),
+              style: TextFontStyle.headlineRoboto40013Dark,
             ),
           ),
         ),
@@ -50,11 +51,7 @@ class RememberMeRowWidget extends StatelessWidget {
           ),
           child: Text(
             'Forgot Password?',
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryColor,
-            ),
+            style: TextFontStyle.headlineRoboto60012Primary,
           ),
         ),
       ],

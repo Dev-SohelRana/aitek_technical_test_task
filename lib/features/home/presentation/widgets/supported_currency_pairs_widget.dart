@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,19 +19,11 @@ class SupportedCurrencyPairsWidget extends StatelessWidget {
           children: [
             Text(
               'Supported Currency Pairs',
-              style: TextStyle(
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w800,
-                color: AppColors.darkTextColor,
-              ),
+              style: TextFontStyle.headlineRoboto80017Dark,
             ),
             Text(
               '${currencyPairs.length} Pairs',
-              style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primaryColor,
-              ),
+              style: TextFontStyle.headlineRoboto60011Primary,
             ),
           ],
         ),
@@ -39,7 +32,7 @@ class SupportedCurrencyPairsWidget extends StatelessWidget {
 
         Text(
           'Currency pairs available in Signals Archive',
-          style: TextStyle(fontSize: 12.sp, color: const Color(0xFF64748B)),
+          style: TextFontStyle.headlineRoboto40012Secondary,
         ),
 
         UIHelper.verticalSpace(14.h),
@@ -86,19 +79,13 @@ class SupportedCurrencyPairsWidget extends StatelessWidget {
                               children: [
                                 Text(
                                   pair['symbol'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.darkTextColor,
-                                  ),
+                                  style: TextFontStyle.headlineRoboto70014Dark,
                                 ),
                                 UIHelper.verticalSpace(3.h),
                                 Text(
                                   pair['name'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    color: AppColors.secondaryTextColor,
-                                  ),
+                                  style: TextFontStyle
+                                      .headlineRoboto40010Secondary,
                                 ),
                               ],
                             ),

@@ -1,4 +1,5 @@
 import 'package:aitek_task/helpers/ui_helpers.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -48,18 +49,14 @@ class ProfileInfoContainerWidget extends StatelessWidget {
           Text(
             name,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 22.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
+            style: TextFontStyle.headlineRoboto70022White,
           ),
 
           UIHelper.verticalSpace(6.h),
 
           Text(
             'Login ID: $login',
-            style: TextStyle(fontSize: 14.sp, color: Colors.white70),
+            style: TextFontStyle.headlineRoboto40014White70,
           ),
 
           UIHelper.verticalSpace(16.h),
@@ -82,14 +79,7 @@ class ProfileInfoContainerWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 7.w),
-                Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF166534),
-                  ),
-                ),
+                Text(status, style: TextFontStyle.headlineRoboto60012Green),
               ],
             ),
           ),

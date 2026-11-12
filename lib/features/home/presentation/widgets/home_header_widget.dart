@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,20 +17,10 @@ class HomeHeaderWidget extends StatelessWidget {
             children: [
               Text(
                 'Welcome Back,',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: const Color(0xFF64748B),
-                ),
+                style: TextFontStyle.headlineRoboto40013Secondary,
               ),
               UIHelper.verticalSpace(4.h),
-              Text(
-                'Trader!',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.darkTextColor,
-                ),
-              ),
+              Text('Trader!', style: TextFontStyle.headlineRoboto80024Dark),
             ],
           ),
         ),

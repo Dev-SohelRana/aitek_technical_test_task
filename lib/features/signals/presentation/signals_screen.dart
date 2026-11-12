@@ -1,5 +1,6 @@
 import 'package:aitek_task/common_widget/custom_app_bar_widget.dart';
 import 'package:aitek_task/constants/custom_app_list.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/features/signals/presentation/widgets/currency_pair_selector.dart';
 import 'package:aitek_task/features/signals/presentation/widgets/signal_card_widget.dart';
 import 'package:aitek_task/features/signals/presentation/widgets/signals_date_filter_widget.dart';
@@ -88,10 +89,7 @@ class _SignalsScreenState extends State<SignalsScreen> {
                       child: Text(
                         'Explore historical trading signals',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: const Color(0xFF64748B),
-                        ),
+                        style: TextFontStyle.headlineRoboto40014Secondary,
                       ),
                     ),
                     UIHelper.verticalSpace(12.h),
@@ -120,19 +118,11 @@ class _SignalsScreenState extends State<SignalsScreen> {
                       children: [
                         Text(
                           'Historical Signals',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFF0B1F45),
-                          ),
+                          style: TextFontStyle.headlineRoboto80016Dark,
                         ),
                         Text(
                           '${signalList.length} Results',
-                          style: TextStyle(
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF64748B),
-                          ),
+                          style: TextFontStyle.headlineRoboto60011Secondary,
                         ),
                       ],
                     ),
@@ -209,7 +199,7 @@ class _SignalsMessage extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13.sp, color: const Color(0xFF64748B)),
+              style: TextFontStyle.headlineRoboto40013Secondary,
             ),
             if (actionLabel != null && onAction != null)
               TextButton(onPressed: onAction, child: Text(actionLabel!)),

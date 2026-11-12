@@ -1,4 +1,5 @@
 import 'package:aitek_task/helpers/ui_helpers.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -57,19 +58,11 @@ class LoginHeaderWidget extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: 'Forex',
-                      style: TextStyle(
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.cFFFFFF,
-                      ),
+                      style: TextFontStyle.headlineRoboto70025White,
                     ),
                     TextSpan(
                       text: 'Copy',
-                      style: TextStyle(
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.accentBlueColor,
-                      ),
+                      style: TextFontStyle.headlineRoboto70025Accent,
                     ),
                   ],
                 ),
@@ -79,27 +72,17 @@ class LoginHeaderWidget extends StatelessWidget {
           UIHelper.verticalSpace(28.h),
           Text(
             'Trade Smarter.',
-            style: TextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.cFFFFFF,
-              height: 1.25,
-            ),
+            style: TextFontStyle.headlineRoboto70028WhiteHeight125,
           ),
           UIHelper.verticalSpace(6.h),
           Text(
             'Grow Bigger.',
-            style: TextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.lightBlueAccentColor,
-              height: 1.25,
-            ),
+            style: TextFontStyle.headlineRoboto70028LightBlueHeight125,
           ),
           UIHelper.verticalSpace(12.h),
           Text(
             'Access your trading account securely.',
-            style: TextStyle(fontSize: 14.sp, color: AppColors.white70),
+            style: TextFontStyle.headlineRoboto40014White70,
           ),
           UIHelper.verticalSpace(24.h),
           Row(
@@ -133,11 +116,7 @@ class MarketPairChip extends StatelessWidget {
       child: Text(
         pair,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 11.sp,
-          fontWeight: FontWeight.w600,
-          color: AppColors.cFFFFFF,
-        ),
+        style: TextFontStyle.headlineRoboto60011White,
       ),
     );
   }

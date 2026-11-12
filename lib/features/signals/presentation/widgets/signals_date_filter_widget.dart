@@ -1,3 +1,4 @@
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,14 +30,7 @@ class SignalsDateFilterWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Date Range',
-          style: TextStyle(
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w800,
-            color: const Color(0xFF0B1F45),
-          ),
-        ),
+        Text('Date Range', style: TextFontStyle.headlineRoboto80015Dark),
 
         UIHelper.verticalSpace(12.h),
 
@@ -73,21 +67,14 @@ class SignalsDateFilterWidget extends StatelessWidget {
                     children: [
                       Text(
                         'Selected Period',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: const Color(0xFF64748B),
-                        ),
+                        style: TextFontStyle.headlineRoboto40010Secondary,
                       ),
 
                       SizedBox(height: 4.h),
 
                       Text(
                         '${formatDate(fromDate)} - ${formatDate(toDate)}',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF0B1F45),
-                        ),
+                        style: TextFontStyle.headlineRoboto70012Dark,
                       ),
                     ],
                   ),
@@ -140,11 +127,7 @@ class SignalsDateFilterWidget extends StatelessWidget {
 
                       Text(
                         'Load Signals',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+                        style: TextFontStyle.headlineRoboto70014White,
                       ),
                     ],
                   ),

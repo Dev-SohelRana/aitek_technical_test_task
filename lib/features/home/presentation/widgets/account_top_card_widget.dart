@@ -1,4 +1,5 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,12 +41,7 @@ class AccountTopCardWidget extends StatelessWidget {
               SizedBox(width: 8.w),
               Text(
                 'TRADING ACCOUNT',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.2,
-                  color: Colors.white70,
-                ),
+                style: TextFontStyle.headlineRoboto60011White70LetterSpacing,
               ),
               const Spacer(),
               Container(
@@ -67,11 +63,7 @@ class AccountTopCardWidget extends StatelessWidget {
                     SizedBox(width: 5.w),
                     Text(
                       'Connected',
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF166534),
-                      ),
+                      style: TextFontStyle.headlineRoboto70010Connected,
                     ),
                   ],
                 ),
@@ -81,19 +73,14 @@ class AccountTopCardWidget extends StatelessWidget {
           UIHelper.verticalSpace(24.h),
           Text(
             'Account Login',
-            style: TextStyle(fontSize: 12.sp, color: Colors.white70),
+            style: TextFontStyle.headlineRoboto40012White70,
           ),
           UIHelper.verticalSpace(6.h),
           Row(
             children: [
               Text(
                 accountLoginNumber,
-                style: TextStyle(
-                  fontSize: 27.sp,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: 1,
-                ),
+                style: TextFontStyle.headlineRoboto80027WhiteLetterSpacing,
               ),
               SizedBox(width: 10.w),
               Icon(
@@ -113,7 +100,7 @@ class AccountTopCardWidget extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Your trading account is securely connected.',
-                  style: TextStyle(fontSize: 11.sp, color: Colors.white70),
+                  style: TextFontStyle.headlineRoboto40011White70,
                 ),
               ),
             ],

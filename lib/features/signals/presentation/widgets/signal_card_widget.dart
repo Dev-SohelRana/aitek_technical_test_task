@@ -1,5 +1,6 @@
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:aitek_task/features/signals/model/signal_model.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,11 +33,7 @@ class SignalCardWidget extends StatelessWidget {
                 ),
                 child: Text(
                   signal.pair,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF2563EB),
-                  ),
+                  style: TextFontStyle.headlineRoboto80012Blue,
                 ),
               ),
 
@@ -52,9 +49,7 @@ class SignalCardWidget extends StatelessWidget {
                 ),
                 child: Text(
                   signal.type,
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w800,
+                  style: TextFontStyle.headlineRoboto80010Badge.copyWith(
                     color: isBuy
                         ? const Color(0xFF15803D)
                         : const Color(0xFFDC2626),
@@ -67,11 +62,7 @@ class SignalCardWidget extends StatelessWidget {
               if (signal.status.isNotEmpty)
                 Text(
                   signal.status,
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF64748B),
-                  ),
+                  style: TextFontStyle.headlineRoboto60010Secondary,
                 ),
             ],
           ),
@@ -107,10 +98,7 @@ class SignalCardWidget extends StatelessWidget {
 
               Text(
                 '${signal.date}  •  ${signal.time}',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: const Color(0xFF64748B),
-                ),
+                style: TextFontStyle.headlineRoboto40010Secondary,
               ),
             ],
           ),
@@ -136,25 +124,11 @@ class SignalValueRowWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 9.sp,
-              color: const Color(0xFF94A3B8),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          Text(title, style: TextFontStyle.headlineRoboto5009Muted),
 
           SizedBox(height: 5.h),
 
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF0B1F45),
-            ),
-          ),
+          Text(value, style: TextFontStyle.headlineRoboto70011Dark),
         ],
       ),
     );

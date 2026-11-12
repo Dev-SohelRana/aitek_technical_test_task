@@ -4,6 +4,7 @@ import 'package:aitek_task/assets_helper/app_colors.dart';
 import 'package:aitek_task/common_widget/custom_app_bar_widget.dart';
 import 'package:aitek_task/common_widget/custom_button.dart';
 import 'package:aitek_task/constants/app_constants.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/features/auth/presentation/login_screen.dart';
 import 'package:aitek_task/features/profile/data/api.dart';
 import 'package:aitek_task/features/profile/model/profile_model.dart';
@@ -174,11 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Expanded(
                       child: Text(
                         'Your account information is securely managed.',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.darkTextColor,
-                          height: 1.5,
-                        ),
+                        style: TextFontStyle.headlineRoboto40012DarkHeight15,
                       ),
                     ),
                   ],

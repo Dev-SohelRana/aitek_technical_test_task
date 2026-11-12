@@ -1,3 +1,4 @@
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,23 +19,9 @@ class SignalValueRowWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 9.sp,
-              color: const Color(0xFF94A3B8),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          Text(title, style: TextFontStyle.headlineRoboto5009Muted),
           UIHelper.verticalSpace(5.h),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF0B1F45),
-            ),
-          ),
+          Text(value, style: TextFontStyle.headlineRoboto70011Dark),
         ],
       ),
     );

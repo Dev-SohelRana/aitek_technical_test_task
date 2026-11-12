@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:aitek_task/common_widget/custom_app_bar_widget.dart';
+import 'package:aitek_task/constants/text_font_style.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:aitek_task/networks/api_acess.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +61,7 @@ class _PromoScreenState extends State<PromoScreen> {
             children: [
               Text(
                 'Explore our promotional materials',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: const Color(0xFF64748B),
-                ),
+                style: TextFontStyle.headlineRoboto40013Secondary,
               ),
               UIHelper.verticalSpace(20.h),
               Expanded(
@@ -138,21 +136,15 @@ class _PromoScreenState extends State<PromoScreen> {
                                 children: [
                                   Text(
                                     promo.title,
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w800,
-                                      color: const Color(0xFF0B1F45),
-                                    ),
+                                    style:
+                                        TextFontStyle.headlineRoboto80015Dark,
                                   ),
                                   if (promo.description.isNotEmpty) ...[
                                     UIHelper.verticalSpace(8.h),
                                     Text(
                                       promo.description,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        height: 1.5,
-                                        color: const Color(0xFF64748B),
-                                      ),
+                                      style: TextFontStyle
+                                          .headlineRoboto40012SecondaryHeight15,
                                     ),
                                   ],
                                   UIHelper.verticalSpace(16.h),
@@ -171,10 +163,8 @@ class _PromoScreenState extends State<PromoScreen> {
                                         promo.buttonText,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w700,
-                                        ),
+                                        style: TextFontStyle
+                                            .headlineRoboto70012Button,
                                       ),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: _buttonColor(
@@ -266,11 +256,7 @@ class _PromoMessage extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13.sp,
-                height: 1.5,
-                color: const Color(0xFF64748B),
-              ),
+              style: TextFontStyle.headlineRoboto40013SecondaryHeight15,
             ),
             if (actionLabel != null && onAction != null)
               TextButton(onPressed: onAction, child: Text(actionLabel!)),
