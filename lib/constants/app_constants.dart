@@ -123,6 +123,7 @@ const String kKeyUserImage = 'user_image';
 const String kKeyPeanutToken = 'peanut_token';
 const String kKeyPeanutLogin = 'peanut_login';
 const String kKeyPartnerToken = 'partner_token';
+const String kKeyLoginID = 'login_id';
 
 //order statuses
 

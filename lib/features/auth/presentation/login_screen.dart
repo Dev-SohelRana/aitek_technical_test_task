@@ -1,9 +1,11 @@
 import 'package:aitek_task/common_widget/custom_button.dart';
 import 'package:aitek_task/common_widget/custom_text_form_field.dart';
+import 'package:aitek_task/constants/app_constants.dart';
 import 'package:aitek_task/features/auth/presentation/widgets/login_welcome_section_widget.dart';
 import 'package:aitek_task/features/auth/presentation/widgets/remember_me_row_widget.dart';
 import 'package:aitek_task/features/auth/presentation/widgets/secuirity_info_widget.dart';
 import 'package:aitek_task/helpers/all_routes.dart';
+import 'package:aitek_task/helpers/di.dart';
 import 'package:aitek_task/helpers/navigation_service.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:aitek_task/networks/api_acess.dart';
@@ -37,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
+  Future<void> loginMethod() async {
     if (!formKey.currentState!.validate()) return;
 
     FocusScope.of(context).unfocus();
@@ -49,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         login: loginController.text.trim(),
         password: passwordController.text,
       );
+      appData.write(kKeyLoginID, loginController.text.trim());
 
       if (!mounted) return;
 
@@ -128,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              onTap: () => _handleLogin(),
+                              onTap: () => loginMethod(),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your password';
@@ -161,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   )
                                 : CustomButton(
-                                    onTap: _handleLogin,
+                                    onTap: loginMethod,
                                     title: 'Sign In',
                                   ),
                             UIHelper.verticalSpace(24.h),

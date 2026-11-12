@@ -1,7 +1,9 @@
 import 'package:aitek_task/assets_helper/app_colors.dart';
+import 'package:aitek_task/constants/app_constants.dart';
 import 'package:aitek_task/features/home/presentation/widgets/account_top_card_widget.dart';
 import 'package:aitek_task/features/home/presentation/widgets/home_header_widget.dart';
 import 'package:aitek_task/features/home/presentation/widgets/supported_currency_pairs_widget.dart';
+import 'package:aitek_task/helpers/di.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +24,10 @@ class HomeScreen extends StatelessWidget {
             children: [
               HomeHeaderWidget(),
               UIHelper.verticalSpace(24.h),
-              AccountTopCardWidget(accountLoginNumber: '20234561'),
+              AccountTopCardWidget(
+                accountLoginNumber:
+                    appData.read(kKeyLoginID) ?? 'Login ID not found',
+              ),
               UIHelper.verticalSpace(28.h),
               SupportedCurrencyPairsWidget(
                 currencyPairs: [
