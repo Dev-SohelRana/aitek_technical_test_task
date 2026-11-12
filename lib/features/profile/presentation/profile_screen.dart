@@ -155,7 +155,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 UIHelper.verticalSpace(24.h),
 
-                // ================= SECURITY INFO =================
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(16.r),
@@ -184,7 +183,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 UIHelper.verticalSpace(28.h),
 
-                // ================= LOGOUT BUTTON =================
                 CustomButton(
                   onTap: () {
                     if (_isLoggingOut) return;
