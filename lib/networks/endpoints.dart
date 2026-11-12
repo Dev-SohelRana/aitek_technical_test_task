@@ -27,4 +27,10 @@ final class ForexEndpoints {
 
   static String requestMobileCabinetApiToken() =>
       "$partnerBaseUrl/api/Authentication/RequestMoblieCabinetApiToken";
+
+  static String getAccountInformation() =>
+      "$peanutBaseUrl/api/ClientCabinetBasic/GetAccountInformation";
+
+  static String getLastFourNumbersPhone() =>
+      "$peanutBaseUrl/api/ClientCabinetBasic/GetLastFourNumbersPhone";
 }

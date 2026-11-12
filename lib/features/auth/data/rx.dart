@@ -46,6 +46,7 @@ final class AuthenticationRX
 
       // Save tokens separately
       await appData.write(kKeyPeanutToken, peanutData.token);
+      await appData.write(kKeyPeanutLogin, login);
 
       await appData.write(kKeyPartnerToken, partnerToken);
 
@@ -96,6 +97,7 @@ final class AuthenticationRX
   // Logout / clear session
   Future<void> logoutRX() async {
     await appData.remove(kKeyPeanutToken);
+    await appData.remove(kKeyPeanutLogin);
     await appData.remove(kKeyPartnerToken);
     await appData.remove(kKeyAccessToken);
     await appData.write(kKeyIsLoggedIn, false);

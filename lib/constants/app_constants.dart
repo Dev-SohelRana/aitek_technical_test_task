@@ -121,6 +121,7 @@ const String kKeyOtpVerifyToken = 'otp_verify_token';
 const String kKeyUserImage = 'user_image';
 //AiTek
 const String kKeyPeanutToken = 'peanut_token';
+const String kKeyPeanutLogin = 'peanut_login';
 const String kKeyPartnerToken = 'partner_token';
 
 //order statuses

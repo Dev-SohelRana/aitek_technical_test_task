@@ -1,12 +1,18 @@
+import 'dart:developer';
+
 import 'package:aitek_task/assets_helper/app_colors.dart';
 import 'package:aitek_task/common_widget/custom_app_bar_widget.dart';
 import 'package:aitek_task/common_widget/custom_button.dart';
+import 'package:aitek_task/constants/app_constants.dart';
 import 'package:aitek_task/features/auth/presentation/login_screen.dart';
+import 'package:aitek_task/features/profile/data/api.dart';
+import 'package:aitek_task/features/profile/model/profile_model.dart';
 import 'package:aitek_task/features/profile/presentation/widgets/logout_dialog_widget.dart';
 import 'package:aitek_task/features/profile/presentation/widgets/profile_header_section_widget.dart';
 import 'package:aitek_task/features/profile/presentation/widgets/profile_info_card_widget.dart';
 import 'package:aitek_task/features/profile/presentation/widgets/profile_info_container_widget.dart';
 import 'package:aitek_task/features/profile/presentation/widgets/profile_info_item_widget.dart';
+import 'package:aitek_task/helpers/di.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
 import 'package:aitek_task/networks/api_acess.dart';
 import 'package:flutter/material.dart';
@@ -20,16 +26,35 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Temporary profile data
-  // Replace with API response data later.
-  final String login = '20234561';
-  final String name = 'Sohel Rana';
-  final String email = 'sohel@example.com';
-  final String phone = '+880 1XXX-XXXXXX';
-  final String accountType = 'Trading Account';
-  final String status = 'Active';
-
+  ProfileModel _profile = ProfileModel.fallback;
   bool _isLoggingOut = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final login = appData.read(kKeyPeanutLogin)?.toString();
+      final token = appData.read(kKeyPeanutToken)?.toString();
+      if (login == null || login.isEmpty || token == null || token.isEmpty) {
+        throw StateError('Peanut login session is unavailable');
+      }
+
+      final profile = await ProfileAPI().getProfile(login: login, token: token);
+      if (!mounted) return;
+
+      setState(() => _profile = profile);
+    } catch (error) {
+      log(
+        error is ProfileApiException
+            ? 'Profile loading failed: ${error.message}'
+            : 'Profile loading failed: ${error.runtimeType}',
+      );
+    }
+  }
 
   Future<void> _logout() async {
     setState(() => _isLoggingOut = true);
@@ -68,14 +93,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileInfoContainerWidget(
-                name: name,
-                login: login,
-                status: status,
+                name: _profile.name,
+                login: _profile.login,
+                status: _profile.status,
               ),
 
               UIHelper.verticalSpace(28.h),
 
-              // ================= PERSONAL INFORMATION =================
               ProfileHeaderSectionWidget(
                 title: 'Personal Information',
                 icon: Icons.person_outline_rounded,
@@ -88,24 +112,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileInfoItemWidget(
                     icon: Icons.person_outline_rounded,
                     title: 'Full Name',
-                    value: name,
+                    value: _profile.name,
                   ),
                   ProfileInfoItemWidget(
                     icon: Icons.email_outlined,
                     title: 'Email Address',
-                    value: email,
+                    value: _profile.email,
                   ),
                   ProfileInfoItemWidget(
                     icon: Icons.phone_outlined,
                     title: 'Phone Number',
-                    value: phone,
+                    value: _profile.phone,
                   ),
                 ],
               ),
 
               UIHelper.verticalSpace(24.h),
 
-              // ================= ACCOUNT INFORMATION =================
               ProfileHeaderSectionWidget(
                 title: 'Account Information',
                 icon: Icons.account_balance_outlined,
@@ -118,17 +141,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileInfoItemWidget(
                     icon: Icons.badge_outlined,
                     title: 'Account Login',
-                    value: login,
+                    value: _profile.login,
                   ),
                   ProfileInfoItemWidget(
                     icon: Icons.account_balance_wallet_outlined,
                     title: 'Account Type',
-                    value: accountType,
+                    value: _profile.accountType,
                   ),
                   ProfileInfoItemWidget(
                     icon: Icons.verified_user_outlined,
                     title: 'Account Status',
-                    value: status,
+                    value: _profile.status,
                     valueColor: const Color(0xFF16A34A),
                   ),
                 ],
