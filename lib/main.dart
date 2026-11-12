@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:aitek_task/assets_helper/app_colors.dart';
@@ -26,8 +27,9 @@ void main() async {
   await GetStorage.init();
   diSetup();
   await setInitValue();
-  initiInternetChecker();
+  await initializeInternetChecker();
   DioSingleton.instance.create();
+  configureSystemUi();
   try {
     await FlutterDisplayMode.setHighRefreshRate();
   } catch (e) {
@@ -39,12 +41,35 @@ void main() async {
   // );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(refreshInternetConnectionStatus());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    rotation();
     return SafeArea(
       top: false,
       child: MultiProvider(

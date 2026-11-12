@@ -31,8 +31,14 @@ class ProfileAPI {
       token: token,
     );
     final accountData = _asJsonMap(accountResponse.data);
+    if (accountData.isEmpty) {
+      throw const ProfileApiException(
+        operation: 'GetAccountInformation',
+        serverMessage: 'The profile service returned no profile data.',
+      );
+    }
 
-    var phone = ProfileModel.fallback.phone;
+    String? phone;
     try {
       final phoneResponse = await _post(
         operation: 'GetLastFourNumbersPhone',
@@ -73,8 +79,38 @@ class ProfileAPI {
       throw ProfileApiException(
         operation: operation,
         statusCode: error.response?.statusCode,
+        serverMessage: _responseMessage(error.response?.data),
       );
     }
+  }
+
+  String? _responseMessage(dynamic value) {
+    if (value is String) {
+      final message = value.trim();
+      if (message.isEmpty) return null;
+      try {
+        final decoded = jsonDecode(message);
+        if (decoded is String) return decoded.trim();
+        if (decoded is Map) return _responseMessage(decoded);
+      } on FormatException {
+        return message;
+      }
+      return message;
+    }
+    if (value is Map) {
+      for (final entry in value.entries) {
+        if ([
+          'message',
+          'error',
+          'title',
+          'detail',
+        ].contains(entry.key.toString().toLowerCase())) {
+          final message = entry.value?.toString().trim();
+          if (message != null && message.isNotEmpty) return message;
+        }
+      }
+    }
+    return null;
   }
 
   Map<String, dynamic> _asJsonMap(dynamic value) {
@@ -91,12 +127,18 @@ class ProfileAPI {
 }
 
 class ProfileApiException implements Exception {
-  const ProfileApiException({required this.operation, this.statusCode});
+  const ProfileApiException({
+    required this.operation,
+    this.statusCode,
+    this.serverMessage,
+  });
 
   final String operation;
   final int? statusCode;
+  final String? serverMessage;
 
   String get message {
+    if (serverMessage != null) return serverMessage!;
     if (statusCode != null) {
       return '$operation returned HTTP $statusCode.';
     }

@@ -237,22 +237,59 @@ String removeAmPm(String time) {
 //   }
 // }
 
-Future<void> initiInternetChecker() async {
-  InternetConnectionChecker.createInstance(
+InternetConnectionChecker? _internetConnectionChecker;
+StreamSubscription<InternetConnectionStatus>? _internetStatusSubscription;
+InternetConnectionStatus? _lastInternetStatus;
+
+Future<void> initializeInternetChecker() async {
+  if (_internetStatusSubscription != null) return;
+
+  final checker = InternetConnectionChecker.createInstance(
     checkTimeout: const Duration(seconds: 1),
     checkInterval: const Duration(seconds: 2),
-  ).onStatusChange.listen((status) {
-    switch (status) {
-      case InternetConnectionStatus.connected:
-        ToastUtil.showShortToast('Data connection is available.'.tr);
-        break;
-      case InternetConnectionStatus.disconnected:
-        ToastUtil.showNoInternetToast();
-        break;
-      case InternetConnectionStatus.slow:
-      // TODO: Handle this case.
-    }
-  });
+  );
+  _internetConnectionChecker = checker;
+  _internetStatusSubscription = checker.onStatusChange.listen(
+    _handleInternetStatus,
+    onError: (Object error) {
+      debugPrint('Internet status stream failed: $error');
+    },
+  );
+  await refreshInternetConnectionStatus();
+}
+
+Future<void> refreshInternetConnectionStatus() async {
+  final checker = _internetConnectionChecker;
+  if (checker == null) return;
+
+  try {
+    final hasConnection = await checker.hasConnection;
+    _handleInternetStatus(
+      hasConnection
+          ? InternetConnectionStatus.connected
+          : InternetConnectionStatus.disconnected,
+    );
+  } catch (error) {
+    debugPrint('Internet status refresh failed: $error');
+  }
+}
+
+void _handleInternetStatus(InternetConnectionStatus status) {
+  if (status == InternetConnectionStatus.slow) {
+    ToastUtil.showShortToast('Internet connection is slow.'.tr);
+    return;
+  }
+  if (status == _lastInternetStatus) return;
+
+  final wasDisconnected =
+      _lastInternetStatus == InternetConnectionStatus.disconnected;
+  _lastInternetStatus = status;
+
+  if (status == InternetConnectionStatus.disconnected) {
+    ToastUtil.showNoInternetToast();
+  } else if (wasDisconnected) {
+    ToastUtil.showShortToast('Data connection is available.'.tr);
+  }
 }
 
 Completer<T> wrapInCompleter<T>(Future<T> future) {
@@ -391,18 +428,13 @@ void showMaterialDialog(BuildContext context) {
   );
 }
 
-void rotation() {
+void configureSystemUi() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
 }
 
 String formatDate(String inputDate) {

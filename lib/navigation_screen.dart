@@ -36,59 +36,89 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
+    final isCompactLayout =
+        screenSize.width < 360 ||
+        screenSize.shortestSide < 600 ||
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final navBarHeight = isCompactLayout ? 58.0 : 72.0;
+    final horizontalPadding = isCompactLayout ? 6.0 : 12.0;
+    final verticalPadding = isCompactLayout ? 3.0 : 8.0;
+    final iconSize = isCompactLayout ? 20.0 : 23.0;
+    final labelFontSize = isCompactLayout ? 8.5 : 11.0;
+    final showLabels = screenSize.width >= 320;
+
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _screens),
-      bottomNavigationBar: Container(
-        height: 72.h,
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            top: BorderSide(color: const Color(0xFFE8EDF5), width: 0.7),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          height: navBarHeight,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding.w,
+            vertical: verticalPadding.h,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 15.r,
-              offset: Offset(0, -3.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(
+              top: BorderSide(color: const Color(0xFFE8EDF5), width: 0.7),
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _buildNavItem(
-                0,
-                Icons.home_rounded,
-                Icons.home_outlined,
-                'Home',
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 15.r,
+                offset: Offset(0, -3.h),
               ),
-            ),
-            Expanded(
-              child: _buildNavItem(
-                1,
-                Icons.candlestick_chart_rounded,
-                Icons.candlestick_chart_outlined,
-                'Signals',
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildNavItem(
+                  0,
+                  Icons.home_rounded,
+                  Icons.home_outlined,
+                  'Home',
+                  iconSize: iconSize,
+                  labelFontSize: labelFontSize,
+                  showLabel: showLabels,
+                ),
               ),
-            ),
-            Expanded(
-              child: _buildNavItem(
-                2,
-                Icons.campaign_rounded,
-                Icons.campaign_outlined,
-                'Promo',
+              Expanded(
+                child: _buildNavItem(
+                  1,
+                  Icons.candlestick_chart_rounded,
+                  Icons.candlestick_chart_outlined,
+                  'Signals',
+                  iconSize: iconSize,
+                  labelFontSize: labelFontSize,
+                  showLabel: showLabels,
+                ),
               ),
-            ),
-            Expanded(
-              child: _buildNavItem(
-                3,
-                Icons.person_rounded,
-                Icons.person_outline_rounded,
-                'Profile',
+              Expanded(
+                child: _buildNavItem(
+                  2,
+                  Icons.campaign_rounded,
+                  Icons.campaign_outlined,
+                  'Promo',
+                  iconSize: iconSize,
+                  labelFontSize: labelFontSize,
+                  showLabel: showLabels,
+                ),
               ),
-            ),
-          ],
+              Expanded(
+                child: _buildNavItem(
+                  3,
+                  Icons.person_rounded,
+                  Icons.person_outline_rounded,
+                  'Profile',
+                  iconSize: iconSize,
+                  labelFontSize: labelFontSize,
+                  showLabel: showLabels,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -98,9 +128,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
     int index,
     IconData selectedIcon,
     IconData unselectedIcon,
-    String title,
-  ) {
+    String title, {
+    required double iconSize,
+    required double labelFontSize,
+    required bool showLabel,
+  }) {
     final isSelected = _currentIndex == index;
+    final label = Text(
+      title.tr,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: TextFontStyle.headlinePublicSans70014.copyWith(
+        fontSize: labelFontSize.sp,
+        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+        color: isSelected ? const Color(0xFF2563EB) : const Color(0xFF94A3B8),
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -121,29 +165,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               isSelected ? selectedIcon : unselectedIcon,
-              size: 23.r,
+              size: iconSize,
               color: isSelected
                   ? const Color(0xFF2563EB)
                   : const Color(0xFF94A3B8),
             ),
-
-            UIHelper.verticalSpace(4.h),
-
-            Text(
-              title.tr,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextFontStyle.headlinePublicSans70014.copyWith(
-                fontSize: 11.sp,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected
-                    ? const Color(0xFF2563EB)
-                    : const Color(0xFF94A3B8),
+            if (showLabel) ...[
+              UIHelper.verticalSpace(4.h),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+                child: label,
               ),
-            ),
+            ],
           ],
         ),
       ),
