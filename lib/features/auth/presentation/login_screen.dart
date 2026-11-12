@@ -145,11 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onChanged: (value) {
                                 setState(() => _rememberMe = value);
                               },
-                              onForgotPassword: () {
-                                NavigationService.navigateTo(
-                                  Routes.navigationScreen,
-                                );
-                              },
+                              onForgotPassword: () {},
                             ),
                             UIHelper.verticalSpace(28.h),
                             _isLoading
