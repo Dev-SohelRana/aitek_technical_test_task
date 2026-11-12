@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:aitek_task/common_widget/custom_app_bar_widget.dart';
 import 'package:aitek_task/helpers/ui_helpers.dart';
+import 'package:aitek_task/networks/api_acess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PromoScreen extends StatefulWidget {
   const PromoScreen({super.key});
@@ -11,25 +16,36 @@ class PromoScreen extends StatefulWidget {
 }
 
 class _PromoScreenState extends State<PromoScreen> {
-  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    promoRXObj.getPromoMaterials();
+  }
 
-  final List<Map<String, dynamic>> promoMaterials = [
-    {
-      '  image': 'https://via.placeholder.com/400x200',
-      'title': 'Promo 1',
-      'description': 'Description for Promo 1',
-    },
-    {
-      'image': 'https://via.placeholder.com/400x200',
-      'title': 'Promo 2',
-      'description': 'Description for Promo 2',
-    },
-    {
-      'image': 'https://via.placeholder.com/400x200',
-      'title': 'Promo 3',
-      'description': 'Description for Promo 3',
-    },
-  ];
+  Future<void> _openPromo(String link) async {
+    final uri = Uri.tryParse(link);
+    if (uri == null ||
+        (uri.scheme != 'https' && uri.scheme != 'http') ||
+        uri.host.isEmpty) {
+      _showLinkError();
+      return;
+    }
+
+    try {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        _showLinkError();
+      }
+    } catch (error) {
+      log('Promo link launch error: $error');
+      _showLinkError();
+    }
+  }
+
+  void _showLinkError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Unable to open this promo link.')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,165 +65,216 @@ class _PromoScreenState extends State<PromoScreen> {
                   color: const Color(0xFF64748B),
                 ),
               ),
-
               UIHelper.verticalSpace(20.h),
-
               Expanded(
-                child: isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF2563EB),
+                child: Obx(() {
+                  if (promoRXObj.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF2563EB),
+                      ),
+                    );
+                  }
+
+                  final errorMessage = promoRXObj.errorMessage.value;
+                  if (errorMessage != null) {
+                    return _PromoMessage(
+                      icon: Icons.cloud_off_outlined,
+                      message: errorMessage,
+                      actionLabel: 'Retry',
+                      onAction: promoRXObj.getPromoMaterials,
+                    );
+                  }
+
+                  final promoMaterials = promoRXObj.promoMaterials;
+                  if (promoMaterials.isEmpty) {
+                    return const _PromoMessage(
+                      icon: Icons.campaign_rounded,
+                      message: 'No promotional materials are available.',
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: promoMaterials.length,
+                    itemBuilder: (context, index) {
+                      final promo = promoMaterials[index];
+                      final promoUri = Uri.tryParse(promo.link);
+                      final canOpenPromo =
+                          promoUri != null &&
+                          (promoUri.scheme == 'https' ||
+                              promoUri.scheme == 'http') &&
+                          promoUri.host.isNotEmpty;
+
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 16.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: const Color(0xFFE8EDF5)),
                         ),
-                      )
-                    : promoMaterials.isEmpty
-                    ? Center(
+                        clipBehavior: Clip.antiAlias,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 76.r,
-                              width: 76.r,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
-                                borderRadius: BorderRadius.circular(22.r),
-                              ),
-                              child: Icon(
-                                Icons.campaign_rounded,
-                                size: 36.r,
-                                color: const Color(0xFF2563EB),
-                              ),
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: promo.imageUrl.isEmpty
+                                  ? _imagePlaceholder()
+                                  : Image.network(
+                                      promo.imageUrl,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (
+                                        context,
+                                        error,
+                                        stackTrace,
+                                      ) => _imagePlaceholder(),
+                                    ),
                             ),
-
-                            UIHelper.verticalSpace(16.h),
-
-                            Text(
-                              'No Promo Materials Available',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w800,
-                                color: const Color(0xFF0B1F45),
-                              ),
-                            ),
-
-                            UIHelper.verticalSpace(7.h),
-
-                            Text(
-                              'Promotional materials will appear here.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: const Color(0xFF64748B),
+                            Padding(
+                              padding: EdgeInsets.all(16.r),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    promo.title,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w800,
+                                      color: const Color(0xFF0B1F45),
+                                    ),
+                                  ),
+                                  if (promo.description.isNotEmpty) ...[
+                                    UIHelper.verticalSpace(8.h),
+                                    Text(
+                                      promo.description,
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        height: 1.5,
+                                        color: const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  ],
+                                  UIHelper.verticalSpace(16.h),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 44.h,
+                                    child: ElevatedButton.icon(
+                                      onPressed: canOpenPromo
+                                          ? () => _openPromo(promo.link)
+                                          : null,
+                                      icon: Icon(
+                                        Icons.open_in_new_rounded,
+                                        size: 17.r,
+                                      ),
+                                      label: Text(
+                                        promo.buttonText,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _buttonColor(
+                                          promo.buttonColor,
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        disabledBackgroundColor: const Color(
+                                          0xFFCBD5E1,
+                                        ),
+                                        disabledForegroundColor: Colors.white,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            11.r,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      )
-                    : ListView.builder(
-                        itemCount: promoMaterials.length,
-                        itemBuilder: (context, index) {
-                          final promo = promoMaterials[index];
-
-                          return Container(
-                            margin: EdgeInsets.only(bottom: 16.h),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: const Color(0xFFE8EDF5),
-                              ),
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Image.network(
-                                    promo['image'] ?? '',
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: const Color(0xFFEFF6FF),
-                                        child: Icon(
-                                          Icons.image_rounded,
-                                          size: 40.r,
-                                          color: const Color(0xFF2563EB),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: EdgeInsets.all(16.r),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        promo['title'] ?? '',
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w800,
-                                          color: const Color(0xFF0B1F45),
-                                        ),
-                                      ),
-
-                                      UIHelper.verticalSpace(8.h),
-
-                                      Text(
-                                        promo['description'] ?? '',
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          height: 1.5,
-                                          color: const Color(0xFF64748B),
-                                        ),
-                                      ),
-
-                                      UIHelper.verticalSpace(16.h),
-
-                                      SizedBox(
-                                        width: double.infinity,
-                                        height: 44.h,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.open_in_new_rounded,
-                                            size: 17.r,
-                                          ),
-                                          label: Text(
-                                            'View Promo',
-                                            style: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: const Color(
-                                              0xFF2563EB,
-                                            ),
-                                            foregroundColor: Colors.white,
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(11.r),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                      );
+                    },
+                  );
+                }),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _imagePlaceholder() {
+    return Container(
+      color: const Color(0xFFEFF6FF),
+      child: Icon(
+        Icons.image_rounded,
+        size: 40.r,
+        color: const Color(0xFF2563EB),
+      ),
+    );
+  }
+
+  Color _buttonColor(String value) {
+    final hex = value.replaceFirst('#', '');
+    if (!RegExp(r'^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$').hasMatch(hex)) {
+      return const Color(0xFF2563EB);
+    }
+    final colorValue = int.parse(hex.length == 6 ? 'FF$hex' : hex, radix: 16);
+    return Color(colorValue);
+  }
+}
+
+class _PromoMessage extends StatelessWidget {
+  const _PromoMessage({
+    required this.icon,
+    required this.message,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final IconData icon;
+  final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 76.r,
+              width: 76.r,
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF6FF),
+                borderRadius: BorderRadius.circular(22.r),
+              ),
+              child: Icon(icon, size: 36.r, color: const Color(0xFF2563EB)),
+            ),
+            UIHelper.verticalSpace(16.h),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13.sp,
+                height: 1.5,
+                color: const Color(0xFF64748B),
+              ),
+            ),
+            if (actionLabel != null && onAction != null)
+              TextButton(onPressed: onAction, child: Text(actionLabel!)),
+          ],
         ),
       ),
     );

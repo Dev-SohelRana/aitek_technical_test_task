@@ -36,4 +36,7 @@ final class ForexEndpoints {
 
   static String getAnalyticSignals(String login) =>
       "$partnerBaseUrl/clientmobile/GetAnalyticSignals/${Uri.encodeComponent(login)}";
+
+  static const String cabinetMicroServiceUrl =
+      "https://api-forexcopy.contentdatapro.com/Services/CabinetMicroService.svc";
 }

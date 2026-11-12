@@ -1,5 +1,6 @@
 import 'package:aitek_task/features/auth/data/rx.dart';
 import 'package:aitek_task/features/auth/model/authentication_response_model.dart';
+import 'package:aitek_task/features/promo/data/rx.dart';
 import 'package:aitek_task/features/signals/data/rx.dart';
 import 'package:aitek_task/features/signals/model/signals_response_model.dart';
 import 'package:rxdart/rxdart.dart';
@@ -13,3 +14,5 @@ SignalsRX signalsRXObj = SignalsRX(
   empty: SignalsResponseModel(),
   dataFetcher: BehaviorSubject<SignalsResponseModel>(),
 );
+
+PromoRX promoRXObj = PromoRX();

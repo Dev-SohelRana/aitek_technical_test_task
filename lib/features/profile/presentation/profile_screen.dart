@@ -115,11 +115,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     value: _profile.name,
                   ),
                   ProfileInfoItemWidget(
-                    icon: Icons.email_outlined,
-                    title: 'Email Address',
-                    value: _profile.email,
-                  ),
-                  ProfileInfoItemWidget(
                     icon: Icons.phone_outlined,
                     title: 'Phone Number',
                     value: _profile.phone,

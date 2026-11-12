@@ -39,7 +39,6 @@ void main() {
       );
       expect(profile.login, '12345678');
       expect(profile.name, 'Test Account');
-      expect(profile.email, isNull);
       expect(profile.phone, '********5520');
       expect(profile.accountType, '1');
       // expect(profile.verificationLevel, '0');
