@@ -155,8 +155,8 @@ Future<void> setInitValue() async {
   // appData.writeIfNull(kKeySelectedLat, 38.74631383626653);
   // appData.writeIfNull(kKeySelectedLng, -9.130169921874991);
   //codemen
-  await appData.writeIfNull(kKeySelectedLat, 22.818285677915657);
-  await appData.writeIfNull(kKeySelectedLng, 89.5535583794117);
+  // await appData.writeIfNull(kKeySelectedLat, 22.818285677915657);
+  // await appData.writeIfNull(kKeySelectedLng, 89.5535583794117);
 
   if (!kIsWeb) {
     final deviceInfo = DeviceInfoPlugin();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../assets_helper/app_colors.dart';
 import '../constants/text_font_style.dart';
 
@@ -103,8 +104,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       style:
           widget.textInputStyle ?? TextFontStyle.headlinePublicSans50016black,
       maxLength: widget.maxLength,
-      buildCounter:
-          (_, {required currentLength, required isFocused, maxLength}) => null,
+      buildCounter: (
+        _, {
+        required currentLength,
+        required isFocused,
+        maxLength,
+      }) => null,
       textInputAction: widget.textInputAction,
       textAlign: widget.textAlign ?? TextAlign.start,
       readOnly: widget.readOnly,
